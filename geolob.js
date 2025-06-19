@@ -1,27 +1,81 @@
 const geolib = require("geolib");
-const fs = require("fs");
 
-// Load the countries.geojson data (make sure the path is correct)
-const countriesGeoJSON = JSON.parse(
-  fs.readFileSync("filtered_asean_countries_with_hk.geojson", "utf8")
-);
+// Using the provided dataset
+const test = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      properties: {
+        name: 'Singapore',
+        'ISO3166-1-Alpha-3': 'SGP',
+        'ISO3166-1-Alpha-2': 'SG',
+      },
+      geometry: {
+        coordinates: [
+          [
+            [104.06414692472994, 1.4359722879905976],
+            [104.08292835727805, 1.4193009683523221],
+            [104.09104161595126, 1.403182825534905],
+            [104.07526485235736, 1.3593778016564626],
+            [104.09370453286624, 1.331869779002312],
+            [104.02711083651613, 1.2948786003109565],
+            [103.95436474980197, 1.295348429060668],
+            [103.93274132569343, 1.299043845575466],
+            [103.91003766944475, 1.2893397985572579],
+            [103.89888242837607, 1.2754329141735403],
+            [103.87952317837988, 1.2737956087923872],
+            [103.86453184355591, 1.2673081027976714],
+            [103.86698849087861, 1.2633318481934848],
+            [103.86540998641564, 1.2560695911612523],
+            [103.87153703999232, 1.241276788815287],
+            [103.89570244179113, 1.2378570065615533],
+            [103.8909164328651, 1.2180615576241878],
+            [103.877413673934, 1.2117609851058833],
+            [103.86803209804248, 1.1989569753612603],
+            [103.86375242393923, 1.2034539660520929],
+            [103.85049448644182, 1.1908505695251206],
+            [103.79754279446973, 1.162185839440336],
+            [103.7289585176761, 1.106335790219153],
+            [103.6417797185493, 1.1589399540265162],
+            [103.585863880306, 1.2066363945636394],
+            [103.59792723935364, 1.2919237570573665],
+            [103.63485883142464, 1.3588104462947608],
+            [103.6462374234933, 1.3806937679568285],
+            [103.65279787976912, 1.3950005416414815],
+            [103.65946943327104, 1.4128145320250316],
+            [103.67615326814511, 1.4347705292902755],
+            [103.69327770486343, 1.4434208926808185],
+            [103.72042428855906, 1.4554452536941191],
+            [103.74985651040696, 1.4468386465687348],
+            [103.77290214158624, 1.4558144409701261],
+            [103.80443247130093, 1.4738392913376015],
+            [103.83469122849768, 1.4743439343325324],
+            [103.86651306772077, 1.4510015666324716],
+            [103.89309269347154, 1.4303932157181767],
+            [103.93394413942944, 1.4279110982620784],
+            [103.95723153207024, 1.42030396077825],
+            [103.99465010885501, 1.4243173169419483],
+            [104.03210800114448, 1.4441922257891382],
+            [104.04776398125854, 1.4438402346087233],
+            [104.06414692472994, 1.4359722879905976],
+          ],
+        ],
+        type: 'Polygon',
+      },
+    },
+  ],
+};
 
 // Function to check which country a point (latitude, longitude) belongs to
 function getCountryFromCoordinates(lat, long) {
   // Loop through all the countries in the GeoJSON data
-  for (const feature of countriesGeoJSON.features) {
+  for (const feature of test.features) {
     const country = feature.properties.name;
     const coordinates = feature.geometry.coordinates;
 
-    // Handle MultiPolygon geometries (countries that span multiple areas)
-    if (feature.geometry.type === "MultiPolygon") {
-      for (const polygon of coordinates) {
-        // Check if the point is inside the current polygon
-        if (geolib.isPointInPolygon({ latitude: lat, longitude: long }, polygon[0])) {
-          return country;
-        }
-      }
-    } else if (feature.geometry.type === "Polygon") {
+    // Handle Polygon geometry (Singapore)
+    if (feature.geometry.type === "Polygon") {
       // Check if the point is inside the polygon
       if (geolib.isPointInPolygon({ latitude: lat, longitude: long }, coordinates[0])) {
         return country;
@@ -33,11 +87,12 @@ function getCountryFromCoordinates(lat, long) {
   return "No country found";
 }
 
-//: 1.548608, 103.920312
+// Example coordinates for a location in Singapore
+const lat = 1.432624; // Example latitude
+const long = 104.046021; // Example longitude
+// 1.432624, 104.046021
 
 
-const lat = 1.548608; // Example latitude for Malaysia
-const long = 103.920312; // Example longitude for Malaysia
 
 const country = getCountryFromCoordinates(lat, long);
 
